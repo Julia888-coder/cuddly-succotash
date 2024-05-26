@@ -1,0 +1,142 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #222222;
+    padding: 16px;
+    text-align: center;
+}
+
+nav {
+    display: inline-block;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+}
+
+a:hover {
+    background-color: #444444;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+}
+
+aside {
+    padding: 20px;
+    margin: 20px;
+    background: #eeeeee;
+    border-radius: 20px;
+    max-width: 250px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-row {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    max-width: 100%;
+}
+
+section {
+    margin: 20px;
+    padding: 20px;
+    background: #eeeeee;
+    border-radius: 20px;
+    flex-grow: 1;
+}
+
+.main-text {
+    display: flex;
+    gap: 20px;
+}
+
+.main-text p {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.main-text img {
+    flex-shrink: 1;
+}
+
+.news {
+    flex-direction: column;
+}
+
+h2, h4 {
+    margin: 0;
+}
+
+.news li {
+    padding: 10px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 10px;
+}
+
+footer {
+    background: #222222;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+
+@media (max-width: 756px) {
+    main {
+        flex-direction: column;
+    }
+
+    aside {
+        max-width: 100%;
+    }
+}
+
+
+@media (max-width: 950px) {
+    .main-text {
+        flex-direction: column;
+    }
+}
