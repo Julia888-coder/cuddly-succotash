@@ -1,0 +1,106 @@
+Определение
+Бинарное дерево поиска — это бинарное дерево, обладающее дополнительными свойствами: 
+-	значение левого потомка меньше значения родителя, 
+-	значение правого потомка больше значения родителя для каждого узла дерева.
+То есть, данные в бинарном дереве поиска хранятся в отсортированном виде.
+При каждой операции вставки нового или удаления существующего узла отсортированный порядок дерева сохраняется.
+При поиске элемента сравнивается искомое значение с корнем.
+Если искомое больше корня, то поиск продолжается в правом потомке корня
+если меньше, то в левом, если равно, то значение найдено и поиск прекращается.
+
+Реализация:
+public class BinaryTree
+{
+    public class Node
+    {
+        public int Data { get; set; }
+        public Node Less { get; set; }
+        public Node Bigger { get; set; }
+
+        public Node(int number) => Data = number;
+    }
+
+    public Node Start { get; set; }
+
+    public BinaryTree(int number) => Start = new Node(number);
+
+    public void Add(int number) => Add(Start, number);
+
+    private void Add(Node node, int number)
+    {
+        if (number > node.Data)
+        {
+            if (node.Bigger == null)
+                node.Bigger = new Node(number);
+            else
+                Add(node.Bigger, number);
+        }
+        else
+        {
+            if (node.Less == null)
+                node.Less = new Node(number);
+            else
+                Add(node.Less, number);
+        }
+    }
+
+    public void Remove(int key) => Remove(Start, key);
+
+    private Node Remove(Node root, int key)
+    {
+        if (root == null) return root;
+
+        if (key < root.Data)
+            root.Less = Remove(root.Less, key);
+        else if (key > root.Data)
+            root.Bigger = Remove(root.Bigger, key);
+        else
+        {
+            if (root.Less == null && root.Bigger == null)
+                root = null;
+            else if (root.Less != null && root.Bigger != null)
+            {
+                var maxNode = FindMin(root.Bigger);
+                root.Data = maxNode.Data;
+                root.Bigger = Remove(root.Bigger, maxNode.Data);
+            }
+            else
+            {
+                var child = root.Less != null ? root.Less : root.Bigger;
+                root = child;
+            }
+
+        }
+        return root;
+
+    }
+    private Node FindMin(Node node)
+    {
+        while (node.Less != null)
+        {
+            node = node.Less;
+        }
+        return node;
+    }
+
+    public void DisplayTree() => DisplayTree(Start);
+
+    private void DisplayTree(Node root)
+    {
+        if (root == null) return;
+        DisplayTree(root.Less);
+        Console.Write(root.Data + " ");
+        DisplayTree(root.Bigger);
+    }
+
+    public bool Find(Node node, int num)
+    {
+        if (node == null) return false;
+        if (node.Data == num) return true;
+        else if (num < node.Data)
+            return Find(node.Less, num);
+        else if (num > node.Data)
+            return Find(node.Bigger, num);
+        return false;
+    }
+}

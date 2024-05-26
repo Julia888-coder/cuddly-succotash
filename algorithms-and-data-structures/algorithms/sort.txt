@@ -1,0 +1,372 @@
+Виды и описания:
+(1-5 из Хаггарти, дальше Лафоре)
+1) Сортировка выбором (SelectionSort)
+	Алгоритм:
+	1) Берем первый элемент. ai, где i = 0
+	2) Проходимся по всей последовательности от ai до an и ищем элемент, который меньше ai.
+	3) Если элемент найден, то переставляем элементы местами.
+	4) Переходим к следующему элементу (++i) и повторяем шаг 2.
+	Сложность n^2
+2) Пузырьковая сортировка (BubbleSort)
+	Алгоритм:
+	Начинаем с правого конца списка (i=n-1, i>=1)
+	1) Сравниваем a[i] и a[i-1].
+		Если a[i] <, то меняем их местами
+	2) --i;
+	3) Переходим к шагу 1, пока i>=индекс_крайнего_неотсортированного_элемент + 1. 
+	4) Возвращаемся в правую сторону и проходимся еще раз.
+	Нет нужды проходить целиком. 
+	В конце каждой итерации по i на краю будет образовываться отсортированная последовательность 
+	Возможна реализация в обратную сторону.
+	В данном подходе легкие уходят влево.
+	В прямом подходе тяжелые уходят наверх вправо.
+	Сложность n^2
+3) Сортировка вставками (InsertionSort)
+	Алгоритм
+	1) Создается пустой список
+	2) В список добавляется поэлементно новый элемент из стартовой последовательности, который встает на правильное место в списке.
+	Т.е для n элементов проверяется n раз порядок в новом списке.
+	Сложность n^2.
+4) Быстрая сортировка (QuickSort)
+	Выбираем рандомный элемент из последовательности. Например 5 из 10. Это будет опорный элемент (opor).
+	Проходимся по последовательности и создаем 3 списка:
+	s1 - элементы, которые < opor
+	s2 - элементы, которые = opor
+	s3 - элементы, которые > opor
+	И повторяем этот процесс с s1 и s3, если длина отрезка больше единицы.
+	Когда останутся 1, делаем следующее:
+	Собираем новый список, каждый раз производя конкатенацию S1 S2 S3	
+	Оптимизация - не создавать списки, а использовать индексы в качестве указателей на начало и конец.
+	Часто применяют такую концепцию:
+	выбирают pivot - базовый элемент. Т.е то, с чего начинаем. Часто берут последний элемент.
+	Дальше из последовательности путем перестановок делают последовательность, где левее pivot находятся элементы меньше pivot, а правее - больше.
+	Дальше мы берем получившиеся половинки и проворачиваем такую-же операцию
+	Сложность nlogn
+5) Сортировка слиянием (MergeSort)
+	Делим рекурсивно последовательность, пока не будет по 1 элементу.
+	Дальше начинаем сравнивать последовательности и сортировать мини-последовательности и таким образом доходим до слияния левой и правой половины первого деления.
+	Слияние происходит следующим образом:
+	1) Создается пустой список
+	2) Сравнивается 1ые элементы из 2х половин и наименьший добавляется в список итоговый и удаляется из текущей половины.
+	Таким образом из 2х частей получается отсортированная последоватнльность.
+	"Уровней" - logn
+	Слияние происходит за n
+	Итого:
+	Сложность nlogn
+6) Сортировка Шелла(ShellSort)
+	В сортировке Шелла используется шаг h, который изменяется по интервальной последовательности Кнута: h=h*3+1
+	1,4,13,40,121,364 итд.
+	Для шага 1 используется значение, которое меньше размерности последовательности (N)
+	Например для N=1000 h1=364, h2=121 итд.
+	Сортировка происходит сортирует 1 и 2 элемент с дистанцией h, затем другие элемент с этой же дистанцией.
+	h=4, (0,4);(1,5);(2,6) итд.
+	Затем группа их 3, шаг меньше.
+	Затем группа из 4, шаг меньше итд.
+	Однако, чаще всего используют просто половину длины в качестве шага (Это и есть подход Шелла)
+	Средняя оценка где-то от O(N^(3/2)) до O(N^(7/5))
+7) Поразрядная сортировка (RadixSort)
+	Числа сортируются по цифрам справа налево в кол-ве разрядов.
+	Т.е в 10с.сс числа делятся на единицы, десятки итд.
+	length - максимальное количество разрядов в сортируемых величинах (например, при сортировке слов необходимо знать максимальное количество букв в слове),
+	range - количество возможных значений одного разряда (при сортировке слов - количество букв в алфавите).
+	123 в 10с.с это l=3,r=10
+	Сложность - n*length/range
+8) Сортировка подсчетом (CountingSort)
+	Применяется к диапазону чисел от 0 до k-1. (Т.е нам нужно знать максимальное число)
+	Создаем список длиной k-1 или количества разных элементов.
+	Считаем сколько раз каждый элемент встретился.
+	И выводим список, умножая каждый элемент по индексу на количество вхождений.
+	Сложность O(n+k) где k это количество различных ключей
+9) Гномья сортировка (GnomeSort)
+	Алгоритм находит первую пару неотсортированных элементов массива и меняет их местами.
+	При этом учитывается факт, что обмент приводит к неправильному расположению элементов примыкающих с обеих сторон к только что переставленным.
+	Поскольку все элементы массива после переставленных не отсортированны, необходимо перепроверить только элементы до переставленных
+	Похож на сортировку вставками.
+	Сложность O(N^2)
+	
+Реализации C#:
+0) Вывод массива на экран:
+static void PrintArray(int[] array)
+    {
+        foreach (int num in array)
+        {
+            Console.WriteLine(num);
+        }
+    }
+
+
+1) Сортировка выбором (SelectionSort)
+
+int[] arr = new int[] {3, 2, 1};
+
+int min, temp;
+int length = arr.Length;
+for (int i = 0; i < length - 1; i++)
+{
+    min = i;
+    for (int j = i + 1; j < length; j++)
+        if (arr[j] < arr[min])
+            min = j;
+    if (min != i)
+    {
+        temp = arr[i];
+        arr[i] = arr[min];
+        arr[min] = temp;
+    }
+}
+
+PrintArray(arr);
+Console.ReadLine();
+
+2) Пузырьковая сортировка (BubbleSort)
+
+int[] arr = new int[] {3, 2, 1};
+
+int temp;
+for (int i = 0; i < arr.Length - 1; i++)
+    for (int j = 0; j < arr.Length - i - 1; j++)
+    {
+        if (arr[j + 1] < arr[j])
+        {
+            temp = arr[j + 1];
+            arr[j + 1] = arr[j];
+            arr[j] = temp;
+        }
+    }
+
+PrintArray(arr);
+Console.ReadLine();
+		
+3) Сортировка вставками (InsertionSort)
+
+int[] arr = new int[] {3, 2, 1};
+
+for (int i = 1; i < arr.Length; i++)
+{
+    int cur = arr[i];
+    int j = i;
+    while (j >= 1 && cur < arr[j - 1])
+    {
+        arr[j] = arr[j - 1];
+        j -= 1;
+    }
+    arr[j] = cur;
+}
+
+PrintArray(arr);
+Console.ReadLine();
+
+4) Быстрая сортировка (QuickSort)
+
+private static int[] QuickSort(int[] array, int minIndex, int maxIndex)
+{
+	if (minIndex >= maxIndex) return array; 
+	int pivotIndex = GetPivotIndex(array, minIndex, maxIndex);
+	QuickSort(array, minIndex, pivotIndex - 1);
+	QuickSort(array, pivotIndex + 1, maxIndex);
+	return array;
+}
+
+private static int GetPivotIndex(int[] array, int minIndex, int maxIndex)
+{
+	int pivot = minIndex;
+	for (int i = minIndex; i <= maxIndex; i++)
+	{
+		if (array[i] < array[maxIndex])
+		{
+			Swap(ref array[i], ref array[pivot]);
+			pivot++;
+		}
+	}
+	Swap(ref array[pivot], ref array[maxIndex]);
+	return pivot;
+}
+
+private static void Swap(ref int leftItem, ref int rightItem)
+{
+	int temp = leftItem;
+	leftItem = rightItem;
+	rightItem = temp;
+}
+
+Использование:
+
+int[] arr = new int[] {3, 2, 1};
+
+QuickSort(arr, 0, arr.Length-1);
+
+PrintArray(arr);
+Console.ReadLine();
+
+5) Сортировка слиянием (MergeSort)
+
+static int[] MergeSort(int[] array)
+{
+	if (array.Length == 1) return array;
+	int middle = array.Length / 2;
+	return Merge(
+		MergeSort(array.Take(middle).ToArray()), 
+		MergeSort(array.Skip(middle).ToArray())
+	);
+}
+
+static int[] Merge(int[] arr1, int[] arr2)
+{
+	int ptr1 = 0, ptr2 = 0;
+	int[] merged = new int[arr1.Length + arr2.Length];
+	for (int i = 0; i < merged.Length; ++i)
+	{
+		if (ptr1 < arr1.Length && ptr2 < arr2.Length)
+			merged[i] = arr1[ptr1] > arr2[ptr2] ? arr2[ptr2++] : arr1[ptr1++];	
+		else
+			merged[i] = ptr2 < arr2.Length ? arr2[ptr2++] : arr1[ptr1++];
+	}
+	return merged;
+}
+
+Использование:
+
+int[] arr = new int[] {44, 1, 331, 5};
+
+arr = MergeSort(arr);
+
+PrintArray(arr);
+Console.ReadLine();
+
+6) Сортировка Шелла (ShellSort)
+
+int[] arr = new int[] {44, 1, 331, 5};
+
+int length = arr.Length;
+int step = length / 2;
+while (step > 0)
+{
+    for (int i = step; i < length; i++)
+    {
+        int cur = arr[i];
+        int j = i;
+        while (j >= step && cur < arr[j - step])
+        {
+            arr[j] = arr[j - step];
+            j -= step;
+        }
+        arr[j] = cur;
+    }
+    step /= 2;
+}
+
+PrintArray(arr);
+Console.ReadLine();
+
+7) Поразрядная сортировка (RadixSort)
+
+public static void Sort(int[] array)
+{
+	int max = array.Max();
+	for (int exp = 1; max / exp > 0; exp *= 10)
+	{
+		CountingSort(array, exp);
+	}
+}
+
+private static void CountingSort(int[] array, int exp)
+{
+	int n = array.Length;
+	int[] output = new int[n];
+	int[] count = new int[10];
+	for (int i = 0; i < n; i++)
+	{
+		int digit = (array[i] / exp) % 10;
+		count[digit]++;
+	}
+	for (int i = 1; i < 10; i++)
+	{
+		count[i] += count[i - 1];
+	}
+	for (int i = n - 1; i >= 0; i--)
+	{
+		int digit = (array[i] / exp) % 10;
+		output[count[digit] - 1] = array[i];
+		count[digit]--;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		array[i] = output[i];
+	}
+}
+
+Использование:
+
+int[] arr = new int[] {44, 1, 331, 5};
+
+Sort(arr);
+
+PrintArray(arr);
+Console.ReadLine();
+
+8) Сортировка подсчетом (CountingSort)
+
+public static int[] CountingSort(int[] array)
+{
+    // Поиск максимального значения в массиве
+    int maxValue = array.Max();
+
+    // Создание массива для подсчета количества вхождений
+    int[] counts = new int[maxValue + 1];
+
+    // Подсчет количества вхождений каждого значения
+    foreach (var item in array)
+    {
+        counts[item]++;
+    }
+
+    // Суммирование значений для определения позиций
+    for (int i = 1; i < counts.Length; i++)
+    {
+        counts[i] += counts[i - 1];
+    }
+
+    // Создание массива для отсортированных элементов
+    int[] sortedArray = new int[array.Length];
+
+    // Размещение элементов в отсортированном массиве
+    for (int i = array.Length - 1; i >= 0; i--)
+    {
+        sortedArray[--counts[array[i]]] = array[i];
+    }
+
+    return sortedArray;
+}
+
+Использование:
+
+int[] arr = new int[] {44, 1, 331, 5};
+
+arr = CountingSort(arr);
+
+PrintArray(arr);
+Console.ReadLine();
+
+9) Гномья сортировка (GnomeSort)
+
+int[] arr = new int[] {44, 1, 331, 5};
+
+//идем со второго элемента если 1 элемент меньше или равен второму элементу увеличиваем i
+//В противном случае меняем элементы местави и уменьшаем i
+for (int i = 1; i < arr.Length;)
+{
+    if (arr[i - 1] <= arr[i])
+        ++i;
+    else
+    {
+        int tmp = arr[i];
+        arr[i] = arr[i - 1];
+        arr[i - 1] = tmp;
+        --i;
+        if (i == 0)
+            i = 1;
+    }
+}
+
+PrintArray(arr);
+Console.ReadLine();

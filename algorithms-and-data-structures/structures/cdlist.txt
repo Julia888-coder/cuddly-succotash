@@ -1,0 +1,139 @@
+Определение:
+Кольцевой двусвязный список представляет замкнутый список, в котором указатель на элемент может перемещаться как вперед, так и назад по кругу.
+Каждый узел такого списка опять же будет представлять элемент, который хранит указатели на следующий и предыдущий узлы
+
+Импортнуть:
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+Реализация:
+public class CircularDoublyLinkedList<T> : IEnumerable<T>
+{
+    public class DoublyNode<T>
+    {
+        public T Data { get; set; }
+        public DoublyNode<T> Previous { get; set; }
+        public DoublyNode<T> Next { get; set; }
+
+        public DoublyNode(T data) => Data = data;
+    }
+
+    private DoublyNode<T> head;
+    private int count;
+
+    public int Count => count;
+    public bool IsEmpty => count == 0;
+
+    public void Add(T data)
+    {
+        var node = new DoublyNode<T>(data);
+        if (head == null)
+        {
+            head = node;
+            head.Next = node;
+            head.Previous = node;
+        }
+        else
+        {
+            node.Previous = head.Previous;
+            node.Next = head;
+            head.Previous.Next = node;
+            head.Previous = node;
+        }
+        count++;
+    }
+    public void AddCenter(T data)
+    {
+        if (this.Count <= 1)
+            this.Add(data);
+        else
+        {
+            int cent = this.count / 2;
+            var prevNode = head;
+            var nextNode = head.Next;
+            var newNode = new DoublyNode<T>(data);
+            for (int i = 1; i < cent; i++)
+            {
+                prevNode = prevNode.Next;
+                nextNode = nextNode.Next;
+            }
+            prevNode.Next = newNode;
+            newNode.Next = nextNode;
+            nextNode.Previous = newNode;
+            newNode.Previous = prevNode;
+            count++;
+        }
+    }
+
+    public bool Remove(T data)
+    {
+        if (count == 0) return false;
+
+        var current = head;
+        var removedItem = (DoublyNode<T>)null;
+
+        do
+        {
+            if (current.Data.Equals(data))
+            {
+                removedItem = current;
+                break;
+            }
+            current = current.Next;
+        }
+        while (current != head);
+
+        if (removedItem != null)
+        {
+            if (count == 1)
+                head = null;
+            else
+            {
+                if (removedItem == head)
+                    head = head.Next;
+                removedItem.Previous.Next = removedItem.Next;
+                removedItem.Next.Previous = removedItem.Previous;
+            }
+            count--;
+            return true;
+        }
+        return false;
+    }
+
+    public void Clear()
+    {
+        head = null;
+        count = 0;
+    }
+
+    public bool Contains(T data)
+    {
+        var current = head;
+        if (current == null) return false;
+        do
+        {
+            if (current.Data.Equals(data))
+                return true;
+            current = current.Next;
+        }
+        while (current != head);
+        return false;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this).GetEnumerator();
+
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        var current = head;
+        do
+        {
+            if (current != null)
+            {
+                yield return current.Data;
+                current = current.Next;
+            }
+        }
+        while (current != head);
+    }
+}

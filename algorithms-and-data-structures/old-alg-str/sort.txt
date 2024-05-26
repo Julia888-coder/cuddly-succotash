@@ -1,0 +1,320 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+            { //Быстрая и Qsort метод Сложность O(n log n)
+		//Быстрая сортировка
+		//Необходимо выбрать опорный элемент массива, им может быть любой элемент, от этого не зависит правильность работы алгоритма;
+		//Разделить массив на три части, в первую должны войти элементы меньше опорного, во вторую - равные опорному и в третью - все элементы больше опорного;
+		//Рекурсивно выполняются предыдущие шаги, для подмассивов с меньшими и большими значениями, до тех пор, пока в них содержится больше одного элемента.
+
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                List<int> list = new List<int>();
+                RandomList(list, 10, 11);
+                PrintList(list);
+                StartQsort(list);
+                PrintList(list);
+                stopwatch.Stop();
+                Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            }
+            { //Слиянием и Merge метод Сложность O(n log n)
+		//Сортировка слиянием
+		//Задача разбивается на подзадачи меньшего размера(в итоге по 2 элемента), которые решаются по отдельности, после чего их решения комбинируются для получения решения исходной задачи.
+                List<int> list = new List<int>();
+                RandomList(list, 10, 11);
+                PrintList(list);
+                list = MergeSort(list);
+                PrintList(list);
+            }
+            { //Подсчетом Сложность Лучшая:O(n) Худшая:O(n + k)
+		//Сортировка подсчетом
+		//Подсчитываем сколько раз в массиве встречается каждое значение и заполняем массив подсчитанными элементами в соответствующих количествах
+
+                List<int> list = new List<int>();
+                RandomList(list, 10, 11);
+                PrintList(list);
+                CountSort(list, 10, 11);
+                PrintList(list);
+            }
+            { //Порязрядная и метод breake Сложность: O(n + k)
+		//Поразрядная сортировка
+		//Сравнение производится поразрядно: сначала сравниваются значения одного крайнего разряда, и элементы группируются
+		//по результатам этого сравнения, затем сравниваются значения следующего разряда, соседнего,
+		//и элементы либо упорядочиваются по результатам сравнения значений этого разряда внутри образованных на предыдущем проходе групп,
+		//либо переупорядочиваются в целом, но сохраняя относительный порядок, достигнутый при предыдущей сортировке.
+		//Затем аналогично делается для следующего разряда, и так до конца    
+    
+                List<int> list = new List<int>();
+                RandomList(list, 10, 11);
+                PrintList(list);
+                RadixSort(list, 2);
+                PrintList(list);
+            }
+            {//Гномья Сложность: O(n^2)Гномья сортировка
+		//Алгоритм находит первую пару неотсортированных элементов массива
+		//и меняет их местами.При этом учитывается факт,
+		//что обмент приводит к неправильному расположению
+		//элементов примыкающих с обеих сторон к только что переставленным.
+		//Поскольку все элементы массива после переставленных не отсортированны,
+		//необходимо перепроверить только элементы до переставленных
+
+                List<int> list = new List<int>();
+                RandomList(list, 10, 11);
+                PrintList(list);
+                GnomeSort(list);
+                PrintList(list);
+            }
+        }
+	/// <summary>
+        /// Рандомизация спика
+        /// </summary>
+        /// <param name="list">Передаем список</param>
+        /// <param name="count">Количество элементов</param>
+        /// <param name="maxNumber">Максимальное для рандома</param>
+        static void RandomList(List<int> list, int count, int maxNumber)
+        {
+            Random random = new Random(123);
+            for (int i = 0; i < count; i++)
+            {
+                list.Add(random.Next(maxNumber));
+            }
+        }
+	/// <summary>
+        /// Печать списка
+        /// </summary>
+        /// <param name="list">Список для печати</param>
+        static void PrintList(List<int> list)
+        {
+            foreach (int i in list)
+            {
+                Console.Write($"{i} ");
+            }
+            Console.WriteLine();
+        }
+	/// <summary>
+        /// Начало быстрой сортировки
+        /// </summary>
+        /// <param name="list">Список для сортировки</param>
+        static void StartQsort(List<int> list)
+        {//Это сделанно что бы передать индексы в новый метод
+            var a = Qsort(list, 0, list.Count - 1);
+        }
+        /// <summary>
+        /// Быстрая сортировка(рекурсивный метод)
+        /// </summary>
+        /// <param name="array">Список</param>
+        /// <param name="leftIndex">С чего мы начинаем сортировать</param>
+        /// <param name="rightIndex">На чем заканчиваем сортировать</param>
+        /// <returns></returns>
+        static List<int> Qsort(List<int> array, int leftIndex, int rightIndex)
+        {
+
+            var i = leftIndex;
+            var j = rightIndex;
+            //Опорный элемент
+            var pivot = array[leftIndex];
+            // Пока левый индекс меньше правого
+            while (i <= j)
+            {
+                // Пока левый Элемент меньше опорного двигаемся вправо
+                while (array[i] < pivot)
+                {
+                    i++;
+                }
+                // Пока правый Элемент больше опорного двигаемся влево
+                while (array[j] > pivot)
+                {
+                    j--;
+                }
+                // На данный момент i укаывает на левый элемент меньше опорного,
+                // А j указывавет на правый элемент больше опорного
+                // 
+                if (i <= j)
+                {
+                    // Меняем элементы местами
+                    int temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    //двигаемся дальше так как элементы найденный ранее упорядочились
+                    i++;
+                    j--;
+                }
+            }
+
+            if (leftIndex < j)
+                //Выбираем новую облать работы сортировки слева
+                Qsort(array, leftIndex, j);
+            if (i < rightIndex)
+                //Выбираем новую область сортировки справа
+                Qsort(array, i, rightIndex);
+            return array;
+        }
+        /// <summary>
+        /// Сортировка Слиянием 
+        /// </summary>
+        /// <param name="list">Список</param>
+        /// <returns></returns>
+        static List<int> MergeSort(List<int> list)
+        {
+            // ЕСЛИ В СПИСКЕ ТОЛЬКО 1 ЭЛЕМЕНТ ЕГО НЕ НАДО СОРТИРОВАТЬ
+            if (list.Count == 1)
+            {
+                return list;
+            }
+            // Находим центр списка
+            int center = list.Count / 2;
+            // Делим список на 2 части
+            List<int> left = list.GetRange(0, center);
+            List<int> right = list.GetRange(center, list.Count - center);
+
+            //Применяем алгоритм сортировки для левой и правой части и соединяем результаты
+            return Merge(MergeSort(left), MergeSort(right));
+        }
+        /// <summary>
+        /// Соединение разделенных списков
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
+        static List<int> Merge(List<int> list1, List<int> list2)
+        {
+            int i = 0, j = 0;
+            //список для обьединение двух списков
+            List<int> merged = new List<int>();
+            for (int k = 0; k < list1.Count + list2.Count; k++)
+            {
+                // Проверяем если ти в каждом списке не пройденные елементы
+                if (i < list1.Count && j < list2.Count)
+                {
+                    //Записываем больший элемент в список слияния
+                    if (list1[i] > list2[j])
+                    {
+                        merged.Add(list2[j]);
+                        j++;
+                    }
+                    else
+                    {
+                        merged.Add(list1[i]);
+                        i++;
+                    }
+                }
+                // Если в одном списке закончились оствшиеся элементы добавляем в конец списка
+                else
+                {
+                    if (j < list2.Count)
+                    {
+                        merged.Add(list2[j]);
+                        j++;
+                    }
+                    else
+                    {
+                        merged.Add(list1[i]);
+                        i++;
+                    }
+                }
+            }
+            return merged;
+        }
+        /// <summary>
+        /// Сортировка подсчетом
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="count"></param>
+        /// <param name="maxNumber"></param>
+        static void CountSort(List<int> list, int count, int maxNumber)
+        {
+            // создаем таблицу для подсчета
+            int[] table = new int[maxNumber];
+            foreach (var num in list)
+            {
+                table[num]++;
+            }
+            list.Clear();
+            //Записывает попорядку элементы в зависимости с подсчетом
+            for (int i = 0; i < table.Length; i++)
+            {
+                for (int j = 0; j < table[i]; j++)
+                {
+                    list.Add(i);
+                }
+            }
+        }
+        /// <summary>
+        /// Поразрядная сортировка
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="maxLength">Максимальная Длинна цифры в символах</param>
+        /// <param name="iter">На каком разряде для сортировки вы сейчас</param>
+        static void RadixSort(List<int> list, int maxLength, int iter = 0)
+        {
+            //Список для промежуточных сортироваок по разрядам
+            List<List<int>> data = new List<List<int>>(10);
+            // добавляем в список списки
+            for (int i = 0; i < 10; i++)
+            {
+                data.Add(new List<int>());
+            }
+            // идем по элементам
+            foreach (var num in list)
+            {
+                //  В промежуточный список добавляем элемент по break выбираем число с помощью iter
+                data[Break(num, maxLength)[iter]].Add(num);
+            }
+            list.Clear();
+            // идем по разрядам и поочередно записываем числа 
+            foreach (var raz in data)
+            {
+                int count = raz.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    list.Add(raz[0]);
+                    raz.RemoveAt(0);
+                }
+            }
+            // увеличиваем разряд уходим на новую итерацию
+            iter++;
+            if (iter > maxLength - 1) return;
+            RadixSort(list, maxLength, iter);
+        }
+        /// <summary>
+        /// Разбивает число на разряды и выводит в виде массива в обратном порядке например 125 будет {5, 2, 1,} 
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        static int[] Break(int num, int maxLength)
+        {
+            int[] data = new int[maxLength];
+            for (int i = 0; i < maxLength; i++)
+            {
+                data[i] = num % 10;
+                num = num / 10;
+            }
+            return data;
+        }
+        /// <summary>
+        /// Гномья сортировка 
+        /// </summary>
+        /// <param name="list">Передаем список</param>
+        private static void GnomeSort(List<int> list)
+        {
+            //идем со второго элемента если 1 елемент меньше или равен второму элементу увеличиваем i
+            //В противном случае меняем элементы местави и уменьшаем i
+            for (int i = 1; i < list.Count;)
+            {
+                if (list[i - 1] <= list[i])
+                    ++i;
+                else
+                {
+                    int tmp = list[i];
+                    list[i] = list[i - 1];
+                    list[i - 1] = tmp;
+                    --i;
+                    if (i == 0)
+                        i = 1;
+                }
+            }
+        }
+}

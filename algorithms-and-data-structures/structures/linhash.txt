@@ -1,0 +1,154 @@
+Определение:
+Метод открытой адресации - применение пробирований для решений коллизий.
+Т.е, если произошла коллизия, то мы с помощью пробирования ищем следующее место для вставки.
+Мы не удаляем из хеш-таблицы, а помечаем как удаленную.
+При повышении коэффициента заполнения > 75 мы делаем ресайз.
+После ресайза, если коэффициент реальных элементов стал меньше 50%, мы делаем рехеш, не вставляя удаленные.
+
+Линейное пробирование. Простейший метод открытой адресации называется линейным опробованием (linear probing): 
+при возникновении коллизии (когда хеширование дает адрес в таблице, который уже занят элементом с ключом,
+не совпадающим с ключом поиска) мы просто проверяем следующую позицию в таблице. Обычно такую проверку 
+(определяющую, содержит ли данная позиция таблицы элемент с ключом, равным ключу поиска) называют пробой (probe).
+При линейном опробовании определяется один из трех возможных исходов пробы: если позиция таблицы содержит элемент, 
+ключ которого совпадает с искомым, то поиск завершился успешно; в противном случае (если позиция таблицы содержит 
+элемент, ключ которого не совпадает с искомым) мы просто проверяем позицию таблицы с большим индексом, продолжая 
+этот процесс (с возвратом к началу таблицы при достижении ее конца) до тех пор, пока не будет найден искомый ключ 
+или пустая позиция таблицы. Если элемент, содержащий искомый ключ, должен быть вставлен после неудачного поиска,
+он помещается в пустое место таблицы, где был завершен поиск. 
+Есть так-же квадратичное пробирование:
+i, i + 1, i + 4, i + 9 итд
+
+Двойное хеширование:
+Применяется 2 хеш-функции : для начального индекса, куда вставлять + для шага
+Допустим у нас значения h1 и h1, тогда:
+index = h1 + h2*i, где i=0..;
+
+
+class HashElement
+{
+	public int Key {get;set;}
+	public int Value {get;set;}
+	public bool Deleted {get;set;}
+
+	public HashElement(int key, int value)
+	{
+		Key = key;
+		Value = value;
+	}
+}
+
+class Table
+{
+	public const int _size = 100;
+	private HashElement[] table = new HashElement[_size];
+	//вычисление хеша
+	public int Hash(int value)
+	{
+		var key = value % 10;
+		return key % _size;
+	}
+
+	public bool Add(int value)
+	{
+		int probe;
+		int code = Hash(value);
+		if ((table[code] == null) || table[code].Deleted)
+		{
+			table[code] = new HashElement(code, value);
+			probe = -1;
+		}
+		else
+		{
+			if (code == (table.Length - 1))
+				probe = 0;
+			else
+				probe = code + 1;
+		}
+		while ((probe != -1) && (probe != code))
+		{
+			if ((table[probe] == null) || table[probe].Deleted)
+			{
+				table[probe] = new HashElement(code, value);
+				probe = -1;
+			}
+			else
+			{
+				if (probe == (table.Length - 1))
+					probe = 0;
+				else
+					probe++;
+			}
+		}
+		if (probe != -1)
+			return false;
+		else
+			return true;
+	}
+
+	public int Find(int value)
+	{
+		int probe;
+		int code = Hash(value);
+		if (table[code] == null)
+			return -1;
+		else if (table[code].Value.Equals(value))
+			return table[code].Value;
+		else
+		{
+			if (code == (table.Length - 1))
+				probe = 0;
+			else
+				probe = code + 1;
+		}
+		while ((probe != -1) && (probe != code))
+		{
+			if (table[probe] == null)
+				return -1;
+			else if (table[probe].Value.Equals(value))
+				return table[probe].Value;
+			else
+			{
+				if (probe == (table.Length - 1))
+					probe = 0;
+				else
+					probe++;
+			}
+		}
+		return -1;
+	}
+
+	public bool Delete(int value)
+	{
+		int probe;
+		int code = hash(value);
+		if (table[code] == null)
+			return false;
+		else if (table[code].Value.Equals(value))
+		{
+			table[code].Deleted = true;
+			probe = -1;
+			return true;
+		}
+		else if (code == (table.Length - 1))
+			probe = 0;
+		else
+			probe = code + 1;
+
+		while ((probe != -1) && (probe != code))
+		{
+			if (table[probe] == null)
+				return false;
+			else if (table[probe].Value.Equals(value))
+			{
+				table[probe].Deleted = true;
+				probe = -1;
+				return true;
+			}
+			else if (probe == (table.Length - 1))
+				probe = 0;
+			else
+				probe++;
+		}
+		return false;
+	}
+}

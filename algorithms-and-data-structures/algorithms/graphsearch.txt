@@ -1,0 +1,151 @@
+Определения:
+Обход графа — это переход от одной его вершины к другой в поисках свойств связей этих вершин.
+Поиск в глубину (стек) заключается в том, что мы двигаемся от начальной вершины в определенном направлении до тех пор, пока не достигнем конца пути или пункта назначения.
+Если мы достигли конца пути, но он не является пунктом назначения, то мы возвращаемся назад и идем по другому маршруту.
+Поиск в ширину. Вместо того, чтобы двигаться по определенному пути до конца, он предполагает движение вперед по одному соседу за раз.
+Мы помещаем в очередь сначала ближайшую к нам вершину, затем ее непосещенных соседей, и продолжаем этот процесс, пока очередь не опустеет или пока мы не найдем искомую вершину.
+Обход в ширину - очередь.
+Обход в глубину - стек.
+
+Реализация для МАТРИЦЫ СМЕЖНОСТИ:
+
+static void PrintList(List<int> list)
+{
+    foreach (int i in list)
+    {
+        Console.Write($"{i} ");
+    }
+    Console.WriteLine();
+}
+
+/// Мой проход в ширину
+private static List<int> InSize(int[,] matrix)
+{
+    var queue = new Queue<int>();
+    var path = new List<int>();
+    queue.Enqueue(0);
+    while (queue.Any())
+    {
+        var vertex = queue.Dequeue();
+        if (!path.Contains(vertex))
+        {
+            path.Add(vertex);
+            for (int i = 0; i < matrix.GetLength(1); i++)
+                if (matrix[vertex, i] == 1 && !path.Contains(i))
+                    queue.Enqueue(i);
+        }
+    }
+    return path;
+}
+
+// Мой обход в глубину
+static void InDeep(int[,] matrix, int vertex, List<int> path)
+{
+    path.Add(vertex);
+    for (int i = 0; i < matrix.GetLength(0); i++)
+        if (matrix[vertex, i] == 1 && !path.Contains(i))
+            InDeep(matrix, i, path);
+}
+
+static void Main(string[] args)
+{
+    //    0  1  2  3  4  5  6  7
+    int[,] matrix = new int[8, 8] 
+    {
+        { 0, 1, 1, 0, 0, 0, 0, 0 }, // 0
+        { 0, 0, 0, 1, 1, 0, 0, 0 }, // 1
+        { 0, 0, 0, 0, 0, 1, 1, 0 }, // 2
+        { 0, 0, 0, 0, 0, 0, 0, 0 }, // 3
+        { 0, 0, 0, 0, 0, 0, 0, 1 }, // 4
+        { 0, 0, 0, 0, 0, 0, 0, 0 }, // 5
+        { 0, 0, 0, 0, 0, 0, 0, 0 }, // 6
+        { 0, 0, 0, 0, 0, 0, 0, 0 }, // 7
+    };
+
+    List<int> obhod = new List<int>();
+    Console.WriteLine("Обход в глубину");
+    InDeep(matrix, 0, obhod);
+    PrintList(obhod);
+    obhod.Clear();
+    Console.WriteLine("Обход в ширину");
+    obhod = InSize(matrix);
+    PrintList(obhod);
+
+    Console.ReadLine();
+}
+
+
+Реализация для СПИСКОВ СМЕЖНОСТИ:
+
+static void PrintList(List<int> list)
+{
+    foreach (int i in list)
+    {
+        Console.Write($"{i} ");
+    }
+    Console.WriteLine();
+}
+
+private static List<int> BreadthFirstSearch(List<List<int>> graph, int startVertex)
+{
+    var queue = new Queue<int>();
+    var path = new List<int>();
+    queue.Enqueue(startVertex);
+    while (queue.Any())
+    {
+        var vertex = queue.Dequeue();
+        if (!path.Contains(vertex))
+        {
+            path.Add(vertex);
+            foreach (int neighbor in graph[vertex])
+            {
+                if (!path.Contains(neighbor))
+                {
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+    }
+    return path;
+}
+
+static void DepthFirstSearch(List<List<int>> graph, int vertex, List<int> path)
+{
+    path.Add(vertex);
+    foreach (int neighbor in graph[vertex])
+    {
+        if (!path.Contains(neighbor))
+        {
+            DepthFirstSearch(graph, neighbor, path);
+        }
+    }
+}
+
+static void Main()
+{
+    List<List<int>> graph = new List<List<int>>
+            {
+                new List<int> { 1, 2 }, // 0
+                new List<int> { 3, 4 }, // 1
+                new List<int> { 5, 6 }, // 2
+                new List<int>(), // 3
+                new List<int> { 7 }, // 4
+                new List<int>(), // 5
+                new List<int>(), // 6
+                new List<int>() // 7
+            };
+
+    List<int> traversalPath = new List<int>();
+
+    Console.WriteLine("Depth First Search:");
+    DepthFirstSearch(graph, 0, traversalPath);
+    PrintList(traversalPath);
+
+    traversalPath.Clear();
+
+    Console.WriteLine("Breadth First Search:");
+    traversalPath = BreadthFirstSearch(graph, 0);
+    PrintList(traversalPath);
+
+    Console.ReadLine();
+}
