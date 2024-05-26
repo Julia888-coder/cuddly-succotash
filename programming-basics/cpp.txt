@@ -1,0 +1,227 @@
+#include <iostream>
+#include <string>
+using namespace std;
+struct Data {
+	string Name = { };
+	int Age = { };
+};
+struct Node {
+	Data* Data = { };
+	Node* Prev = { };
+	Node* Next = { };
+};
+struct List {
+	Node* Head = { };
+	Node* Tail = { };
+	int Size = 0;
+};
+Node* create_node(string name, int age) {
+	Data* data = new Data();
+	data->Name = name;
+	data->Age = age;
+	Node* node = new Node();
+	node->Data = data;
+	return node;
+}
+void add_to_start(List* list, string name, int age) {
+	if (list == nullptr)
+		return;
+	Node* newNode = create_node(name, age);
+	if (list->Head == nullptr) {
+		list->Head = newNode;
+		list->Tail = newNode;
+	}
+	else {
+		newNode->Next = list->Head;
+		list->Head->Prev = newNode;
+		list->Head = newNode;
+	}
+	list->Size++;
+}
+void add_to_end(List* list, string name, int age) {
+	if (list == nullptr)
+		return;
+	Node* newNode = create_node(name, age);
+	if (list->Head == nullptr) {
+		list->Head = newNode;
+		list->Tail = newNode;
+	}
+	else {
+		newNode->Prev = list->Tail;
+		list->Tail->Next = newNode;
+		list->Tail = newNode;
+	}
+	list->Size++;
+}
+void add_to_middle(List* list, string name, int age) {
+	if (list == nullptr)
+		return;
+	Node* newNode = create_node(name, age);
+	if (list->Head == nullptr) {
+		list->Head = newNode;
+		list->Tail = newNode;
+	}
+	else if (list->Head == list->Tail) {
+		list->Head->Prev = newNode;
+		newNode->Next = list->Head;
+		list->Head = newNode;
+	}
+	else {
+		int i = 0;
+		Node* nextNode = list->Head;
+		while (i < list->Size / 2){
+			nextNode = nextNode->Next;
+			i++;
+		}
+		Node* beforeNode = nextNode->Prev;
+		beforeNode->Next = newNode;
+		newNode->Prev = beforeNode;
+		nextNode->Prev = newNode;
+		newNode->Next = nextNode;
+	}
+	list->Size++;
+}
+void sorted_insert(List* list, string name, int age) {
+	if (list == nullptr)
+		return;
+	Node* newNode = create_node(name, age);
+	if (list->Head == nullptr) {
+		list->Head = newNode;
+		list->Tail = newNode;
+	}
+	else if (age < list->Head->Data->Age) {
+		newNode->Next = list->Head;
+		list->Head->Prev = newNode;
+		list->Head = newNode;
+	}
+	else {
+		Node* tmp = list->Head;
+		while (tmp->Next != nullptr && tmp->Next->Data->Age < age) {
+			tmp = tmp->Next;
+		}
+		newNode->Prev = tmp;
+		if (tmp->Next == nullptr) {
+			list->Tail = newNode;
+		}
+		else {
+			newNode->Next = tmp->Next;
+			newNode->Next->Prev = newNode;
+		}
+		tmp->Next = newNode;
+	}
+	list->Size++;
+}
+bool is_exist(List* list, string name) {
+	if (list == nullptr || list->Head == nullptr)
+		return false;
+	Node* tmp = list->Head;
+	while (tmp!=nullptr) {
+		if (tmp->Data->Name.compare(name) == 0) {
+			return true;
+		}
+		tmp = tmp->Next;
+	}
+	return false;
+}
+void delete_from_start(List* list) {
+	if (list == nullptr || list->Head == nullptr)
+		return;
+	if (list->Head == list->Tail) {
+		delete list->Head->Data;
+		delete list->Head;
+		list->Head = {};
+		list->Tail = {};
+	}
+	else {
+		Node* newHead = list->Head->Next;
+		newHead->Prev = { };
+		delete list->Head->Data;
+		delete list->Head;
+		list->Head = newHead;
+	}
+	list->Size--;
+}
+void delete_from_end(List* list) {
+	if (list == nullptr || list->Head == nullptr)
+		return;
+	if (list->Head == list->Tail) {
+		delete list->Head->Data;
+		delete list->Head;
+		list->Head = {};
+		list->Tail = {};
+	}
+	else {
+		Node* newTail = list->Tail->Prev;
+		newTail->Next = { };
+		delete list->Tail->Data;
+		delete list->Tail;
+		list->Tail = newTail;
+	}
+	list->Size--;
+}
+void clear(List* list) {
+	if (list == nullptr)
+		return;
+	Node* head = list->Head;
+	while (head != nullptr) {
+		Node* next = head->Next;
+		delete head->Data;
+		delete head;
+		head = next;
+	}
+	list->Head = { };
+	list->Tail= { };
+	list->Size = 0;
+}
+void print(List* list) {
+	if (list == nullptr || list->Size == 0) {
+		cout << "list is empty" << endl;
+		return;
+	}
+	cout << list->Size << endl;
+	Node* tmp = list->Head;
+	while (tmp != nullptr) {
+		string name = tmp->Data->Name;
+		int age = tmp->Data->Age;
+		cout << "Object { name = " + name + ", age = " + std::to_string(age) + "}" << endl;
+		tmp = tmp->Next;
+	}
+}
+void print_reverse(List* list) {
+	if (list == nullptr || list->Size == 0) {
+		cout << "list is empty" << endl;
+		return;
+	}
+	Node* tmp = list->Tail;
+	cout << list->Size << endl;
+	while (tmp != nullptr) {
+		string name = tmp->Data->Name;
+		int age = tmp->Data->Age;
+		cout << "Object { name = " + name + ", age = " + std::to_string(age) + "}" << endl;
+		tmp = tmp->Prev;
+	}
+}
+List* list;
+/*Пример чтения данных с консоли*/
+void read_data() {
+	int age = {};
+	while (!(cin >> age)) {
+		cout << "Error" << endl;
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	};
+	string name = { };
+	cin >> name;
+	sorted_insert(list, name, age);
+}
+int main() {
+	list = new List();
+	add_to_middle(list, "Egov", 15);
+	add_to_middle(list, "Romanov", 30);
+	add_to_middle(list, "Shamshev", 12);
+	add_to_middle(list, "Skalkin", 28);
+	add_to_middle(list, "Evseeva", 1);
+	print(list);
+	clear(list);
+	delete list;
+}

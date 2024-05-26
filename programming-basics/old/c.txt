@@ -1,0 +1,105 @@
+
+
+#include <string>
+#include <iostream>
+using namespace std;
+
+
+struct RegistrationForm
+{
+	int Number;
+	string Surname;
+	string Name;
+	string Partonimyc;
+};
+
+struct Node : RegistrationForm
+{
+	//Это значение ноды
+	RegistrationForm data;
+	//Указатель на следующую ноду
+	Node* prev;
+	Node* next;
+	
+};
+
+struct Node* getNode(RegistrationForm data)
+{
+	// allocate node
+	Node* newNode = new Node();
+
+	// put in the data
+	newNode->data = data;
+	newNode->prev = newNode->next = nullptr;
+	return newNode;
+}
+
+void sortedInsert(struct Node** head_ref, struct Node* newNode)
+{
+	struct Node* current;
+
+	// if list is empty
+	if (*head_ref == nullptr)
+		*head_ref = newNode;
+
+	// beginning of the list
+	else if ((*head_ref)->data.Number >= newNode->data.Number) {
+		newNode->next = *head_ref;
+		newNode->next->prev = newNode;
+		*head_ref = newNode;
+	}
+
+	else {
+		current = *head_ref;
+
+		// locate the node after which the new node
+		// is to be inserted
+		while (current->next != nullptr &&
+			current->next->data.Number < newNode->data.Number)
+			current = current->next;
+
+		/* Make the appropriate links */
+		newNode->next = current->next;
+
+		// if the new node is not inserted
+		// at the end of the list
+		if (current->next != nullptr)
+			newNode->next->prev = newNode;
+
+		current->next = newNode;
+		newNode->prev = current;
+	}
+}
+void printList(struct Node* head)
+{
+	while (head != nullptr) {
+		cout << head->data.Number << " ";
+		cout << head->data.Name << " ";
+		cout << head->data.Surname << " \n";
+		head = head->next;
+	}
+}
+
+int main()
+{
+	struct Node* head = nullptr;
+	RegistrationForm test;
+	test.Name = "Test1";
+	test.Partonimyc = "Random";
+	test.Surname = "Bla";
+	test.Number = 4;
+	struct Node* new_node = getNode(test);
+	new_node = getNode(test);
+	sortedInsert(&head, new_node);
+	test.Number = 8;
+	new_node = getNode(test);
+	sortedInsert(&head, new_node);
+	test.Number = 12;
+	new_node = getNode(test);
+	sortedInsert(&head, new_node);
+	test.Number = 1;
+	new_node = getNode(test);
+	sortedInsert(&head, new_node);
+	printList(head);
+	return 0;
+}
